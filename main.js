@@ -1,5 +1,3 @@
-
-// GameBoard code below
 const gameEngine = new GameEngine();
 var canvasWidth;
 var canvasHeight;
@@ -31,19 +29,17 @@ function Circle() {
     this.closestPredatorDistance = Infinity;
     this.closestPreyDistance = Infinity;
     this.closestFoodDistance = Infinity;
-    this.velocity = { x: 0, y: 0 };
+    this.velocity = {x: 0, y: 0};
     this.speed = 100;
     let startX = Math.random() * (canvasWidth - this.radius);
     let startY = Math.random() * (canvasHeight - this.radius);
-    for (let i in gameEngine.entities) {
-        let ent = gameEngine.entities[i];
-        if (centerDistance(this, ent) < ent.radius + this.radius && ent instanceof Circle) {
-            this.x = Infinity;
-            this.y = Infinity;
-            this.removeFromWorld = true;
+    for (let i = 0; i < gameEngine.entities.length; i++) {
+        if (centerDistance(this, i) === 0 && gameEngine.entities[i] instanceof Circle) {
+            break;
+        } else if (i === gameEngine.entities.length - 1) {
+            Entity.call(this, gameEngine, startX, startY);
         }
-    }
-    Entity.call(this, gameEngine, startX, startY);
+    }     
 };
 
 Circle.prototype = new Entity();
@@ -234,17 +230,13 @@ function Food() {
     this.area = Math.PI * Math.pow(this.radius, 2);
     let startX = Math.random() * (canvasWidth - this.radius);
     let startY = Math.random() * (canvasHeight - this.radius);
-    this.x = startX;
-    this.y = startY;
-    for (let i in gameEngine.entities) {
-        let ent = gameEngine.entities[i];
-        if (centerDistance(this, ent) < ent.radius + this.radius) {
-            this.x = Infinity;
-            this.y = Infinity;
-            this.removeFromWorld = true;
+    for (let i = 0; i < gameEngine.entities.length; i++) {
+        if (centerDistance(this, i) === 0 && gameEngine.entities[i] instanceof Circle) {
+            break;
+        } else if (i === gameEngine.entities.length - 1) {
+            Entity.call(this, gameEngine, startX, startY);
         }
-    }
-    Entity.call(this, gameEngine, startX, startY);
+    } 
 };
 
 Food.prototype = new Entity();
@@ -280,7 +272,7 @@ God.prototype.update = function () {
     Entity.prototype.update.call(this);
     let circleCount = 0;
     let foodCount = 0;
-    for (let i in gameEngine.entities) {
+    for (let i = 0; i < gameEngine.entities.length; i++) {
         if (gameEngine.entities[i] instanceof Circle) {
             circleCount++;
         } else if (gameEngine.entities[i] instanceof Food) {
@@ -311,10 +303,6 @@ ASSET_MANAGER.downloadAll(function () {
     var ctx = canvas.getContext('2d');
     canvasWidth = canvas.width;
     canvasHeight = canvas.height;
-    // for (var i = 0; i < 12; i++) {
-    //     let circle = new Circle(gameEngine);
-    //     gameEngine.addEntity(circle);
-    // }
     for (var i = 0; i < 100; i++) {
         var circle = new Circle();
         gameEngine.addEntity(circle);
