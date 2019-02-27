@@ -121,17 +121,17 @@ Circle.prototype.update = function () {
             if (ent.color === 1) {
                 if (this.closestFood) {
                     if (this.closestFood.color === 1) {
-                        if (centerDistance(this, ent) < this.closestFoodDistance) {
+                        if (edgeDistance(this, ent) < this.closestFoodDistance) {
                             this.closestFood = ent;
-                            this.closestFoodDistance = centerDistance(this, ent)
+                            this.closestFoodDistance = edgeDistance(this, ent)
                         }
                     } else {
                         this.closestFood = ent;
-                        this.closestFoodDistance = centerDistance(this, ent);
+                        this.closestFoodDistance = edgeDistance(this, ent);
                     }  
                 } else {
                     this.closestFood = ent;
-                        this.closestFoodDistance = centerDistance(this, ent);
+                        this.closestFoodDistance = edgeDistance(this, ent);
                 }                
             } else if (this.area <= 300) {
                 if (edgeDistance(this, ent) < this.closestFoodDistance) {
@@ -205,7 +205,7 @@ Circle.prototype.draw = function (ctx) {
     ctx.fillStyle = "White";
     ctx.textAlign = "center"; 
     if (this.color === 1) {
-        ctx.fillText("SICK", this.x, this.y - this.radius);
+        ctx.fillText("Infected", this.x, this.y - this.radius);
         ctx.fillStyle = this.colors[this.color];
     } else {
         ctx.fillText("Size: " + Math.round(this.area), this.x, this.y - this.radius);
