@@ -16,8 +16,7 @@ function edgeDistance(a, b) {
 
 function Circle(game) {
     this.colors = ["Red", "Green"];
-    // console.log(Math.random() * 25);
-    this.color = Math.floor(Math.random() * 50 / 49); // 1 in 50 Chance to be sick.
+    this.color = Math.floor(Math.random() * 50 / 48.5); // 1 in 25 Chance to be sick.
     if (this.color === 1) {
         this.radius = 15;
     } else {
@@ -33,7 +32,7 @@ function Circle(game) {
     this.closestFood = null;
     this.closestFoodDistance = 600;
     this.velocity = { x: 0, y: 0 };
-    this.speed = 50;
+    this.speed = 100;
     Entity.call(this, game, this.radius + Math.random() * (600 - this.radius * 2),
         this.radius + Math.random() * (600 - this.radius * 2));
 };
@@ -79,6 +78,9 @@ Circle.prototype.update = function () {
     if (this.collideRight()) this.x = 600;
     if (this.collideTop()) this.y = 0;
     if (this.collideBottom()) this.y = 600;
+    if (this.radius > 600) {
+        this.removeFromWorld = true;
+    }
     for (var i = 0; i < this.game.entities.length; i++) {
         let ent = this.game.entities[i];
         if (this != ent && this.eat(ent)) {
@@ -91,7 +93,7 @@ Circle.prototype.update = function () {
                 // }               
             } else if (this.area > ent.area) {
                 if (ent.color === 1 && ent instanceof Food) {
-                    this.area *= 20;
+                    this.area *= 5;
                     // ent.removeFromWorld = true;
                     // let food = new Food(gameEngine);
                     // gameEngine.addEntity(food);
@@ -117,12 +119,31 @@ Circle.prototype.update = function () {
         }
         if (ent instanceof Food) {
             if (ent.color === 1) {
+                if (this.closestFood) {
+                    if (this.closestFood.color === 1) {
+                        if (centerDistance(this, ent) < this.closestFoodDistance) {
+                            this.closestFood = ent;
+                            this.closestFoodDistance = centerDistance(this, ent)
+                        }
+                    } else {
+                        this.closestFood = ent;
+                        this.closestFoodDistance = centerDistance(this, ent);
+                    }  
+                } else {
                     this.closestFood = ent;
-                    this.closestFoodDistance = 0;
+                        this.closestFoodDistance = centerDistance(this, ent);
+                }                
             } else if (this.area <= 300) {
                 if (edgeDistance(this, ent) < this.closestFoodDistance) {
-                    this.closestFood = ent;
-                    this.closestFoodDistance = edgeDistance(this, ent);
+                    if (this.closestFood) {
+                        if (this.closestFood.color != 1) {
+                            this.closestFood = ent;
+                            this.closestFoodDistance = edgeDistance(this, ent);
+                        }
+                    } else {
+                        this.closestFood = ent;
+                        this.closestFoodDistance = edgeDistance(this, ent);
+                    }                   
                 }
             }
         }
