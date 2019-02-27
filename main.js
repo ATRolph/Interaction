@@ -35,7 +35,7 @@ function Circle() {
     this.speed = 100;
     let startX = Math.random() * (canvasWidth - this.radius);
     let startY = Math.random() * (canvasHeight - this.radius);
-    for (let i = 0; i < gameEngine.entities.length; i++) {
+    for (let i in gameEngine.entities) {
         let ent = gameEngine.entities[i];
         if (centerDistance(this, ent) < ent.radius + this.radius && ent instanceof Circle) {
             this.x = Infinity;
@@ -124,7 +124,7 @@ Circle.prototype.update = function () {
                     this.closestFood = ent;
                     this.closestFoodDistance = edgeDistance(this, ent);
                 }
-            } else if (this.area != this.max) {
+            } else {
                 if (edgeDistance(this, ent) < this.closestFoodDistance) {
                     if (this.closestFood) {
                         if (this.closestFood.color != 1) {
@@ -174,7 +174,23 @@ Circle.prototype.update = function () {
             let newMagnitude = Math.sqrt(newXDir * newXDir + newYDir * newYDir);
             this.velocity.x = this.speed * (newXDir / newMagnitude);
             this.velocity.y = this.speed * (newYDir / newMagnitude);          
-        } 
+        } else if (this.closestPrey && this.closestFood) {
+            let newXDir = 0;
+            let newYDir = 0;
+            if (this.closestFood.color === 1 && this.area != this.max) {
+                newXDir = this.closestFood.x - this.x;
+                newYDir = this.closestFood.y - this.y;
+            } else if (this.closestPreyDistance <= this.closestFoodDistance || this.area > 2000) {
+                newXDir = this.closestPrey.x - this.x;
+                newYDir = this.closestPrey.y - this.y;
+            } else {
+                newXDir = this.closestFood.x - this.x;
+                newYDir = this.closestFood.y - this.y;
+            }
+            let newMagnitude = Math.sqrt(newXDir * newXDir + newYDir * newYDir);
+            this.velocity.x = this.speed * (newXDir / newMagnitude);
+            this.velocity.y = this.speed * (newYDir / newMagnitude);         
+        }
         // else {
         //     let newXDir = this.closestFood.x - this.x;
         //     let newYDir = this.closestFood.y - this.y;
@@ -220,7 +236,7 @@ function Food() {
     let startY = Math.random() * (canvasHeight - this.radius);
     this.x = startX;
     this.y = startY;
-    for (let i = 0; i < gameEngine.entities.length; i++) {
+    for (let i in gameEngine.entities) {
         let ent = gameEngine.entities[i];
         if (centerDistance(this, ent) < ent.radius + this.radius) {
             this.x = Infinity;
@@ -264,7 +280,7 @@ God.prototype.update = function () {
     Entity.prototype.update.call(this);
     let circleCount = 0;
     let foodCount = 0;
-    for (let i = 0; i < gameEngine.entities.length; i++) {
+    for (let i in gameEngine.entities) {
         if (gameEngine.entities[i] instanceof Circle) {
             circleCount++;
         } else if (gameEngine.entities[i] instanceof Food) {
