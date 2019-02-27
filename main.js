@@ -8,6 +8,12 @@ function centerDistance(a, b) {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
+function futureDistance(a, b) {
+    var dx = a.x - (b.x + b.velocity.x * gameEngine.clockTick);
+    var dy = a.y - (b.y + b.velocity.y * gameEngine.clockTick);
+    return Math.sqrt(dx * dx + dy * dy) - a.radius - b.radius;
+}
+
 function edgeDistance(a, b) {
     var dx = a.x - b.x;
     var dy = a.y - b.y;
@@ -17,6 +23,7 @@ function edgeDistance(a, b) {
 function Circle() {
     this.colors = ["Red", "Green"];
     this.color = Math.floor(Math.random() * 50 / 48.5); // 1 in 25 Chance to be sick.
+    // this.color = 0;
     if (this.color === 1) {
         this.radius = 15;
     } else {
@@ -31,13 +38,17 @@ function Circle() {
     this.closestFoodDistance = Infinity;
     this.velocity = {x: 0, y: 0};
     this.speed = 100;
-    let startX = Math.random() * (canvasWidth - this.radius);
-    let startY = Math.random() * (canvasHeight - this.radius);
+    this.x = Math.random() * (canvasWidth - this.radius);
+    this.y = Math.random() * (canvasHeight - this.radius);
     for (let i = 0; i < gameEngine.entities.length; i++) {
-        if (centerDistance(this, i) === 0 && gameEngine.entities[i] instanceof Circle) {
-            break;
-        } else if (i === gameEngine.entities.length - 1) {
-            Entity.call(this, gameEngine, startX, startY);
+        let ent = gameEngine.entities[i];
+        if (ent instanceof Circle) {
+            if (edgeDistance(this, ent) <= 0) {
+                break;
+            }
+        }
+        if (i === gameEngine.entities.length - 1) {
+            Entity.call(this, gameEngine, this.x, this.y);
         }
     }     
 };
@@ -67,6 +78,10 @@ Circle.prototype.collideBottom = function () {
 
 Circle.prototype.update = function () {
     Entity.prototype.update.call(this);
+    let temp = this.speed;
+    this.speed = document.getElementById('speed').value;
+    this.velocity.x = (this.velocity.x / temp) * this.speed;
+    this.velocity.y = (this.velocity.y / temp) * this.speed;
     this.x += this.velocity.x * gameEngine.clockTick;
     this.y += this.velocity.y * gameEngine.clockTick;
     this.closestPredator = null;
@@ -228,13 +243,17 @@ function Food() {
         this.radius = Math.floor(Math.random() * 3 + 1);
     }
     this.area = Math.PI * Math.pow(this.radius, 2);
-    let startX = Math.random() * (canvasWidth - this.radius);
-    let startY = Math.random() * (canvasHeight - this.radius);
+    this.x = Math.random() * (canvasWidth - this.radius);
+    this.y = Math.random() * (canvasHeight - this.radius);
     for (let i = 0; i < gameEngine.entities.length; i++) {
-        if (centerDistance(this, i) === 0 && gameEngine.entities[i] instanceof Circle) {
-            break;
-        } else if (i === gameEngine.entities.length - 1) {
-            Entity.call(this, gameEngine, startX, startY);
+        let ent = gameEngine.entities[i];
+        if (ent instanceof Circle) {
+            if (edgeDistance(this, ent) <= 0) {
+                break;
+            }
+        } 
+        if (i === gameEngine.entities.length - 1) {
+            Entity.call(this, gameEngine, this.x, this.y);
         }
     } 
 };
