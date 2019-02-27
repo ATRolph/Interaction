@@ -98,7 +98,7 @@ Circle.prototype.update = function () {
                 }
                 this.radius = Math.sqrt(this.area / Math.PI);
                 ent.removeFromWorld = true;
-                // let scaledSpeed = this.speed * 10  / this.radius;
+                // let scaledSpeed = this.speed / (this.radius / 20);
                 // this.velocity.x = scaledSpeed * (this.velocity.x / this.speed);
                 // this.velocity.y = scaledSpeed * (this.velocity.y / this.speed); 
                 // this.speed = scaledSpeed;  
