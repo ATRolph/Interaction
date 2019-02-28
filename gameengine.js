@@ -11,10 +11,9 @@ window.requestAnimFrame = (function () {
             };
 })();
 
-
 function Timer() {
     this.gameTime = 0;
-    this.maxStep = 0.05;
+    this.maxStep = .05;
     this.wallLastTimestamp = 0;
 }
 
@@ -95,7 +94,7 @@ GameEngine.prototype.startInput = function () {
 }
 
 GameEngine.prototype.addEntity = function (entity) {
-    console.log('added entity');
+    // console.log('added entity');
     this.entities.push(entity);
 }
 
