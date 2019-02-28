@@ -40,17 +40,18 @@ function Circle() {
     this.speed = 100;
     this.x = Math.random() * (canvasWidth - this.radius);
     this.y = Math.random() * (canvasHeight - this.radius);
-    for (let i = 0; i < gameEngine.entities.length; i++) {
-        let ent = gameEngine.entities[i];
-        if (ent instanceof Circle) {
-            if (edgeDistance(this, ent) <= 0) {
-                break;
-            }
-        }
-        if (i === gameEngine.entities.length - 1) {
-            Entity.call(this, gameEngine, this.x, this.y);
-        }
-    }     
+    // for (let i = 0; i < gameEngine.entities.length; i++) {
+    //     let ent = gameEngine.entities[i];
+        // if (ent instanceof Circle) {
+        //     if (edgeDistance(this, ent) <= 0) {
+        //         break;
+        //     }
+        // }
+        // if (i === gameEngine.entities.length - 1) {
+        //     Entity.call(this, gameEngine, this.x, this.y);
+        // }
+    // }     
+    Entity.call(this, gameEngine, this.x, this.y);
 };
 
 Circle.prototype = new Entity();
@@ -245,17 +246,18 @@ function Food() {
     this.area = Math.PI * Math.pow(this.radius, 2);
     this.x = Math.random() * (canvasWidth - this.radius);
     this.y = Math.random() * (canvasHeight - this.radius);
-    for (let i = 0; i < gameEngine.entities.length; i++) {
-        let ent = gameEngine.entities[i];
-        if (ent instanceof Circle) {
-            if (edgeDistance(this, ent) <= 0) {
-                break;
-            }
-        } 
-        if (i === gameEngine.entities.length - 1) {
-            Entity.call(this, gameEngine, this.x, this.y);
-        }
-    } 
+    // for (let i = 0; i < gameEngine.entities.length; i++) {
+    //     let ent = gameEngine.entities[i];
+    //     if (ent instanceof Circle) {
+    //         if (edgeDistance(this, ent) <= 0) {
+    //             break;
+    //         }
+    //     } 
+    //     if (i === gameEngine.entities.length - 1) {
+    //         Entity.call(this, gameEngine, this.x, this.y);
+    //     }
+    // } 
+    Entity.call(this, gameEngine, this.x, this.y);
 };
 
 Food.prototype = new Entity();
@@ -289,6 +291,7 @@ God.prototype.constructor = God;
 
 God.prototype.update = function () {
     Entity.prototype.update.call(this);
+    console.log(gameEngine.entities.length);
     let circleCount = 0;
     let foodCount = 0;
     for (let i = 0; i < gameEngine.entities.length; i++) {
